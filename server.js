@@ -3,9 +3,14 @@
 var express = require('express');
 var swig    = require('swig');
 var bodyParse = require('body-parser');
+var cookieParse = require("cookie-parser");
 var roll = require("./roll");
 var validate = require('./validate');
+var crypto = require("crypto");
+var uaCheck = require('./ua-check');
 var app = express();
+
+var sessKey = crypto.randomBytes(4).toString("hex");
 
 app.engine('jss', swig.renderFile);
 app.set('view engine', 'jss');
@@ -21,6 +26,8 @@ app.use(function(req,res,next){
     next();
 })
 
+app.use(cookieParse());
+
 app.use('/static', express.static('static'));
 
 app.get('/', function(req,res){
@@ -29,6 +36,10 @@ app.get('/', function(req,res){
         cash: roll.remainCash(),
         top:  roll.remainTop()
     };
+    if (req.cookies.key && req.cookies.key.indexOf(sessKey)!=-1) {
+        res.render("already_guessed", param);
+        return;
+    }
     if (param.num==0) res.render("none_left");
     else res.render('index',param); 
 });
@@ -36,6 +47,21 @@ app.get('/', function(req,res){
 app.use(bodyParse.urlencoded({extended:true}));
 
 app.post('/roll', function(req,res){
+    // check user agent
+    if (!uaCheck(req)) {
+        res.status(403);
+        res.render("good_guy_card");
+        return;
+    }
+    var param = {
+        num:  roll.remainNum(),
+        cash: roll.remainCash(),
+        top:  roll.remainTop()
+    };
+    if (req.cookies.key && req.cookies.key.indexOf(sessKey)!=-1) {
+        res.render("already_guessed", param);
+        return;
+    }
     // validate alipay/id
     var id = req.body.alipay;
     if (!validate(id)) {
@@ -47,8 +73,12 @@ app.post('/roll', function(req,res){
     }else{
         var amount = roll.roll(id);
         if (!amount) {
-            res.render("already_guessed");
+            res.render("already_guessed", param);
         }else{
+            var r2 = crypto.pseudoRandomBytes(12).toString("hex");
+            res.cookie("key", r2+sessKey, {
+                maxAge: 24*60*60*1000, httpOnly:true}
+            );
             res.render("guessed", {
                 cash: amount
             });
