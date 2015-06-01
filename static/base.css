@@ -1,0 +1,39 @@
+strong{
+    color: #FF2222;
+}
+h2{
+    font-family: '黑体';
+    color: #FF2222;
+}
+div {
+    margin-left: 7%;
+}
+footer {
+    z-index:99;
+    position:fixed;
+    bottom:0;
+    left:0;
+    width: 92%;
+    margin: 0 auto 0 auto;
+    padding: 1.5pt 4% 0 4%;
+    font-family:monospace;
+}
+.color1 {
+    background-color: #1c516c;
+    color: #fff9ba;
+}
+
+.color1.light {
+    background-color: #26607d;
+}
+footer a{
+    display: block;
+    text-align:center;
+    font-size: 0.75rem;
+    margin: 0.2rem auto 0 auto;
+    padding: 0.25rem 0 0.2rem 0;
+    text-decoration: none;
+    height: 1em;
+    overflow: hidden;
+}
+

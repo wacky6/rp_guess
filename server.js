@@ -1,57 +1,55 @@
-express = require('express');
-crypto  = require('crypto');
-fs      = require('fs');
-url     = require('url')
+"use strict";
+
+var express = require('express');
+var swig    = require('swig');
+var bodyParse = require('body-parser');
+var roll = require("./roll");
+var validate = require('./validate');
 var app = express();
-var tab = {};
-var pGuess   = fs.readFileSync('guess.html');
-var pGuessed = fs.readFileSync('guessed.html');
-var pAjax    = fs.readFileSync('ajax3.js');
+
+app.engine('jss', swig.renderFile);
+app.set('view engine', 'jss');
+app.set('views', __dirname+"/view");
+
+app.set('view cache', false);
+swig.setDefaults({cache:false});
+
+app.use('/static', express.static('static'));
 
 app.get('/', function(req,res){
-    //console.log(req.headers.cookie);
-    var id = req.headers.cookie;
-    if (!id || !tab[id] || tab[id]==1) { // set id, invite to guess
-        crypto.pseudoRandomBytes(8, function(e, b) {
-            if (e) {
-                res.end('BUSY!');
-            }else{
-                var sess = 'sess='+b.toString('hex');
-                tab[sess] = 1;
-                res.status(200);
-                if (!id)  res.set('Set-Cookie', sess)
-                res.set('Content-Type', 'text/html; charset=UTF-8');
-                res.send(pGuess);
-            }
-        })
+    var param = {
+        num:  roll.remainNum(),
+        cash: roll.remainCash(),
+        top:  roll.remainTop()
+    };
+    if (param.num==0) res.render("none_left");
+    else res.render('index',param); 
+});
+
+app.use(bodyParse.urlencoded({extended:true}));
+app.post('/submit.jss', function(req,res){
+    // validate alipay/id
+    var id = req.body.alipay;
+    if (!validate(id)) {
+        res.render("check_id");
+        return;
     }
-    if (tab[id]==2){
-        res.status(200);
-        res.set('Content-Type', 'text/html; charset=UTF-8');
-        res.send(pGuessed);
-    }
-})
-app.get('/submit.do', function(req,res){
-    var o = url.parse(req.url, true);
-    var p = o.query['payload'];
-    if (p) {
-        //console.log('payload='+p);
-        var sess = req.headers.cookie || 0;
-        try {
-            var j = JSON.parse(p);
-            console.log(j.num+'\t'+j.acc+'\t'+req.headers.cookie+'\t'+req.socket.remoteAddress);
-            tab[sess] = 2;
-            res.status(200);
-            res.end('OK');
-        }catch(e){
-            console.log('err='+e);
+    if (roll.remainNum() == 0) {
+        res.render("none_left");
+    }else{
+        var amount = roll.roll(id);
+        if (!amount) {
+            res.render("already_guessed");
+        }else{
+            res.render("guessed", {
+                cash: amount
+            });
         }
     }
-})
-app.get('/ajax3.js', function(req,res){
-    res.status(200);
-    res.set('Content-Type', 'text/javascript');
-    res.send(pAjax);
-})
+});
+app.use(function(req,res){
+    res.status(404);
+    res.end("404");
+});
 
 app.listen(12800);
