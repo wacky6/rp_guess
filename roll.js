@@ -24,7 +24,7 @@ var log = fs.createWriteStream("./roll.log", {
 
 var d = new Date();
 log.write("================================\n");
-log.write("roll initialized at: "+d.toLocaleString())+"\n";
+log.write("roll initialized at: "+d.toLocaleString()+"\n");
 
 // check conf, initialize pool
 conf.forEach(function(e){
