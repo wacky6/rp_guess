@@ -8,6 +8,5 @@ written in less than 2 hrs, so should be *buggy* for production use
 have fun!
 
 ###LICENSE
-* WTFPL (Except ajax3 and express)
-* ajax3:    MIT [[project page]](https://github.com/wacky6/ajax3)
+* WTFPL (Except express and other dependencies)
 * express: MIT [[project page]](https://www.npmjs.com/package/express)
