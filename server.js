@@ -14,6 +14,13 @@ app.set('views', __dirname+"/view");
 app.set('view cache', false);
 swig.setDefaults({cache:false});
 
+
+app.disable("x-powered-by");
+app.use(function(req,res,next){
+    res.setHeader("X-Powered-By", "rpg2");
+    next();
+})
+
 app.use('/static', express.static('static'));
 
 app.get('/', function(req,res){
@@ -27,7 +34,8 @@ app.get('/', function(req,res){
 });
 
 app.use(bodyParse.urlencoded({extended:true}));
-app.post('/submit.jss', function(req,res){
+
+app.post('/roll', function(req,res){
     // validate alipay/id
     var id = req.body.alipay;
     if (!validate(id)) {
@@ -47,9 +55,10 @@ app.post('/submit.jss', function(req,res){
         }
     }
 });
+
 app.use(function(req,res){
     res.status(404);
-    res.end("404");
+    res.render("404");
 });
 
 app.listen(12800);

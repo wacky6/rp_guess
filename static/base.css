@@ -1,3 +1,102 @@
+@viewport {
+	width: device-width;
+	user-scalable: no;
+}
+
+html {
+	font-size: 12pt;
+}
+.color1 {
+    background-color: #1c516c;
+    color: #fff9ba;
+}
+
+.color1.light {
+    background-color: #26607d;
+}
+
+.color2 {
+    background-color: #fff7ec;
+}
+.color2.light {
+    background-color: #fff8f8;
+}
+
+body {
+    margin:  0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #fff8f8;
+    color: #262626;
+}
+h1 {
+    font-family: STXiHei, "华文细黑",
+                 "Microsoft YaHei", "微软雅黑", 
+                 Helvetica, sans-serif;
+    left: 0; 
+    top:  0;
+    margin:  0    auto 0 auto;
+    padding: 1rem 0    0.6rem 12%;
+    font-size: 2rem;
+    font-weight: normal;
+    display: block;
+	background-color: #1c516c;
+	color: #fff9ba;
+}
+
+h3 {
+    font-family: Helvetica, STXiHei, "华文细黑", 
+                 "Microsoft Yahei", "微软雅黑", 
+                 Georgia, serif;
+    font-weight: normal;
+    font-size: 1.3rem;
+    display: block;
+}
+
+hr {
+    width: 97%;
+    margin: 0.7rem auto 0.7rem auto;
+}
+
+#content_wrapper {
+	margin: 0 0 1.3rem 0;
+}
+
+article {
+    position: relative;
+    width: 77%;
+    margin: 0 auto 0 auto;
+    padding: 0.8rem 2% 0.8rem 2%;
+}
+
+input[type=text] {
+	font-size: 1.4rem;
+	width:  30ch;
+	border: 1px solid #777;
+}
+input[type=submit] {
+	font-size: 1.2rem;
+}
+
+/* style override for mobile/portriat device */
+@media all and (max-width: 120ch) {
+    article {
+        width: 94%;
+        padding: 0.5rem 3% 0.8rem 3%;
+        border-width: 0;
+    }
+    h1 {
+		display: block;
+		text-align: center;
+		padding: 0.8rem 0 0.8rem 0;
+    }
+	input[type=text] {
+		width: 90%;
+		display:block;
+		margin-bottom: 0.5rem;
+	}
+}
+
 strong{
     color: #FF2222;
 }
@@ -18,14 +117,6 @@ footer {
     padding: 1.5pt 4% 0 4%;
     font-family:monospace;
 }
-.color1 {
-    background-color: #1c516c;
-    color: #fff9ba;
-}
-
-.color1.light {
-    background-color: #26607d;
-}
 footer a{
     display: block;
     text-align:center;
@@ -37,3 +128,6 @@ footer a{
     overflow: hidden;
 }
 
+pre.opaq {
+	color: #ffffff;
+}
